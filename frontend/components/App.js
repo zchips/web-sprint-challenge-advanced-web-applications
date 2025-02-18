@@ -37,8 +37,9 @@ export default function App() {
       const data = await response.json();
       if (response.ok) {
         localStorage.setItem('token', data.token);
+        console.log('Token set in localStorage:', data.token);
         setMessage(data.message);
-        redirectToArticles();
+        setTimeout(() => redirectToArticles(), 100); // Short delay to ensure token is stored
       } else {
         setMessage(data.message);
       }
@@ -53,6 +54,12 @@ export default function App() {
     setSpinnerOn(true);
     try {
       const token = localStorage.getItem('token');
+      console.log('Token being used for fetch:', token);
+      if (!token) {
+        setMessage('Unauthorized. Please log in again.');
+        redirectToLogin();
+        return;
+      }
       const response = await fetch(articlesUrl, {
         method: 'GET',
         headers: { 'Authorization': `Bearer ${token}` }
@@ -150,11 +157,21 @@ export default function App() {
         </nav>
         <Routes>
           <Route path="/" element={<LoginForm login={login} />} />
-          <Route path="articles" element={
-            <>
-              <ArticleForm postArticle={postArticle} updateArticle={updateArticle} currentArticleId={currentArticleId} />
-              <Articles  articles={articles} deleteArticle={deleteArticle} setCurrentArticleId={setCurrentArticleId} />
-            </>
+          <Route path="/articles" element={
+          <>
+            <ArticleForm
+              postArticle={postArticle}
+              updateArticle={updateArticle}
+              setCurrentArticleId={setCurrentArticleId}
+              currentArticleId={currentArticleId}
+            />
+            <Articles 
+              articles={articles}
+              getArticles={getArticles}
+              deleteArticle={deleteArticle}
+              setCurrentArticleId={setCurrentArticleId}  
+            />
+          </>
           } />
         </Routes>
         <footer>Bloom Institute of Technology 2024</footer>

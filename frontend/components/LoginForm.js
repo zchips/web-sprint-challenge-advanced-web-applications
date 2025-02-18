@@ -5,6 +5,7 @@ const initialFormValues = {
   username: '',
   password: '',
 }
+
 export default function LoginForm({ login }) {  // ✨ Props destructured here
   const [values, setValues] = useState(initialFormValues)
 
@@ -16,6 +17,7 @@ export default function LoginForm({ login }) {  // ✨ Props destructured here
   const onSubmit = evt => {
     evt.preventDefault()
     // ✨ Call login function with username and password
+    console.log('Login form submitted:', values);
     login({ username: values.username.trim(), password: values.password.trim() })
   }
 
@@ -49,4 +51,4 @@ export default function LoginForm({ login }) {  // ✨ Props destructured here
 // 🔥 No touchy: LoginForm expects the following props exactly:
 LoginForm.propTypes = {
   login: PT.func.isRequired,
-}
+} 
